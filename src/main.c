@@ -6,12 +6,12 @@ ARQUIVO: main.c
 VERSAO: 1.0
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "ArvBinAvl.h"
+#include "ArvBinAvl.c"
 
 int main(int argc, char const *argv[])
 {
-    /* code */
+    Avl *avl = criaAvl();
+
+    printf("\n");
     return 0;
 }
