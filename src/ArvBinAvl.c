@@ -37,3 +37,34 @@ Avl* criaAvl(){
     ptr->raiz = NULL;
     return ptr;
 }
+
+//Funcao que imprime a arvore no formato em-ordem
+void printAvl(NodeAvl *node){
+    if (!node) return;
+
+    printAvl(node->left);
+    printf(" %d ", node->chave);
+    printAvl(node->right);
+}
+
+ //Funcao de Busca de um node
+NodeAvl* searchAvl(NodeAvl *node, int bool, int chave){
+    if(!node) return NULL;
+
+    if (chave < node->chave) return searchAvl(node->left, 1, chave);
+    else if (chave > node->chave) return searchAvl(node->right, 1, chave);
+    else return node;
+}
+
+ //Funcao que retona a altura da raiz
+int heightAvl(NodeAvl *raiz){
+    if(!raiz) return -1;
+
+    int tam_esq, tam_dir;
+
+    tam_esq = 1 + heightAvl(raiz->left);
+    tam_dir = 1 + heightAvl(raiz->right);
+
+    if(tam_dir > tam_esq) return tam_dir;
+    else return tam_esq;
+}
