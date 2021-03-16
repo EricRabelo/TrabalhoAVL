@@ -1,9 +1,8 @@
 /*
 TRABALHO DE IMPLEMENTACAO DE ARVORE BINARIA DE BUSCA BALANCEADA (AVL)
-AUTOR: LUIZ GUSTAVO FALQUETO
+AUTOR: LUIZ GUSTAVO FALQUETO e ERIC RABELO
 DATA CRIACAO: 11/03/2021
 ARQUIVO: .h
-VERSAO: 1.0
 */
 
 #ifndef ARVBINAVL_H
@@ -29,14 +28,24 @@ typedef struct radizAvl{
 /*------------------------------------------ Assinaturas das funcoes -----------------------------------------*/
 NodeAvl* criaNode(int chave); //Funcao que cria uma instancia do node
 Avl* criaAvl(); //Funcao que inicializa a arvore
-void simple_RightRotation(NodeAvl *node, int bool); //Funcao de Rotacao simples para a direita
-void simple_LeftRotation(NodeAvl *node, int bool); //Funcao de Rotacao simples para a esquerda
-void double_RightRotation(NodeAvl *node, int bool); //Funcao de Rotacao dupla para a direita
-void double_LeftRotation(NodeAvl *node, int bool); //Funcao de Rotacao dupla para a esquerda
-NodeAvl* insertAvl(NodeAvl *node, int bool, int chave); //Funcao de Insercao da arvore
-NodeAvl* searchAvl(NodeAvl *node, int bool, int chave); //Funcao de Busca de um node
-int deleteAvl(NodeAvl *node, int bool, int chave); //Funcao de Remocao de um node
+
+void simple_RightRotation(NodeAvl **node); //Funcao de Rotacao simples para a direita
+void simple_LeftRotation(NodeAvl **node); //Funcao de Rotacao simples para a esquerda
+void double_RightRotation(NodeAvl **node); //Funcao de Rotacao dupla para a direita
+void double_LeftRotation(NodeAvl **node); //Funcao de Rotacao dupla para a esquerda
+
+NodeAvl* insertAvl(NodeAvl *node, int chave); //Funcao de Insercao da arvore (1)
+NodeAvl* searchAvl(NodeAvl *node, int chave); //Funcao de Busca de um node (1)
+int deleteAvl(NodeAvl *node, int chave); //Funcao de Remocao de um node (1)
+
 int heightAvl(NodeAvl *raiz); //Funcao que retona a altura da raiz
-void printAvl(NodeAvl *raiz); //Funcao que imprime a arvore no formato em-ordem
+
+int printAVL(NodeAvl *raiz); //Funcao para imprimir arvore (2)
+
+/*Legenda:
+    (1) int(compara)(void *, void*) -> Funcao implementada pelo programador usuário para verificar
+        se o elemento buscado esta presente ou nao na AVL
+    (2) void (printFunction)(void *, void *) -> 
+*/
 
 #endif //ARVBINAVL_H

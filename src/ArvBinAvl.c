@@ -38,24 +38,6 @@ Avl* criaAvl(){
     return ptr;
 }
 
-//Funcao que imprime a arvore no formato em-ordem
-void printAvl(NodeAvl *node){
-    if (!node) return;
-
-    printAvl(node->left);
-    printf(" %d ", node->chave);
-    printAvl(node->right);
-}
-
- //Funcao de Busca de um node
-NodeAvl* searchAvl(NodeAvl *node, int bool, int chave){
-    if(!node) return NULL;
-
-    if (chave < node->chave) return searchAvl(node->left, 1, chave);
-    else if (chave > node->chave) return searchAvl(node->right, 1, chave);
-    else return node;
-}
-
  //Funcao que retona a altura da raiz
 int heightAvl(NodeAvl *raiz){
     if(!raiz) return -1;
@@ -67,4 +49,38 @@ int heightAvl(NodeAvl *raiz){
 
     if(tam_dir > tam_esq) return tam_dir;
     else return tam_esq;
+}
+
+//Funcao de Rotacao simples para a direita
+void simple_RightRotation(NodeAvl **node){
+    NodeAvl *u = *node;
+    NodeAvl *v = u->left;
+    u->left = v->right;
+    v->right = u;
+    v->fatorBal = 0;
+    u->fatorBal = 0;
+    *node = v; 
+}
+
+//Funcao de Rotacao simples para a esquerda
+void simple_LeftRotation(NodeAvl **node){
+    NodeAvl *u = *node;
+    NodeAvl *v = u->right;
+    u->right = v->left;
+    v->left = u;
+    u->fatorBal = 0;
+    v->fatorBal = 0;
+    *node = v;
+}
+
+ //Funcao de Rotacao dupla para a direita
+void double_RightRotation(NodeAvl **node){
+    simple_LeftRotation(&(*node)->left);
+    simple_RightRotation(node);
+}
+
+ //Funcao de Rotacao dupla para a esquerda
+void double_LeftRotation(NodeAvl **node){
+    simple_RightRotation(&(*node)->right);
+    simple_LeftRotation(node);
 }
