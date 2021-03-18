@@ -48,14 +48,25 @@ int heightAvl(NodeAvl *raiz){
     else return tam_esq;
 }
 
+//Calcula o fator de balanço de um nó;
+int balanceAVL(NodeAvl *avl){
+	return labs(heightAvl(avl->left)-heightAvl(avl->right));
+}
+
+//Verifica qual dos inteiros é maior;
+int maior (int x, int y){
+	if (x>y) return x;
+	else return y;
+}
+
 //Funcao de Rotacao simples para a direita
 void RotationLL(NodeAvl **node){
     NodeAvl *u = *node;
     NodeAvl *v = u->left;
     u->left = v->right;
     v->right = u;
-    v->fatorBal = 0;
-    u->fatorBal = 0;
+    v->fatorBal = heightAvl((*node)->left) - heightAvl((*node)->right);
+    u->fatorBal = heightAvl((*node)->left) - heightAvl((*node)->right);
     *node = v; 
 }
 
@@ -65,8 +76,8 @@ void RotationRR(NodeAvl **node){
     NodeAvl *v = u->right;
     u->right = v->left;
     v->left = u;
-    u->fatorBal = 0;
-    v->fatorBal = 0;
+    u->fatorBal = heightAvl((*node)->left) - heightAvl((*node)->right);
+    v->fatorBal = heightAvl((*node)->left) - heightAvl((*node)->right);
     *node = v;
 }
 
@@ -107,51 +118,38 @@ int insertAvl(NodeAvl **node, int chave){
             if((*node)->chave > chave){
 
                 if(insertAvl(&(*node)->left, chave) == 1){
-                    switch((*node)->fatorBal){
-                        case 1:
-                            if((*node)->left->fatorBal == 1) RotationLL(node);
-                            else RotationLR(node);
-                            break;
-                        case 0:
-                            (*node)->fatorBal = 1;
-                            break;
-                        case -1:
-                            (*node)->fatorBal = 0;
-                            break;
-                        default:
-                            break;
+                    
+                    if(balanceAVL(*node) >= 2){
+                        if(chave < (*node)->left->chave){
+                            RotationLL(node);
+                        }else RotationLR(node);
                     }
-                    return 1;
-                }else return 0;
+                }
             }else{
                 if((*node)->chave < chave){
                     if(insertAvl(&(*node)->right, chave) == 1){
-                        switch ((*node)->fatorBal)
-                        {
-                        case 1:
-                            (*node)->fatorBal = 0;
-                            break;
-                        case 0:
-                            (*node)->fatorBal = -1;
-                            break;
-                        case -1:
-                            if((*node)->right->fatorBal == -1) RotationRR(node);
-                            else RotationRL(node);
-                        default:
-                            break;
+                        
+                        if(balanceAVL(*node) >= 2){
+                            if(chave > (*node)->right->chave){
+                                RotationRR(node);
+                            }else RotationRL(node);
                         }
-                        return 1;
                     }
-                }else return 0;
+                }
             }
-            return 0;
+            (*node)->fatorBal = heightAvl((*node)->left) - heightAvl((*node)->right);
+            return 1;
         }
     }
 }
 
-void printAVL(NodeAvl *node){
-	if((!node)) return;
-	printAVL(node->left);
-	printf("%d ", node->chave);
-	printAVL(node->right);
+
+void imprimeArvore(NodeAvl *T, int nivel){
+    int i;
+    if(T!=NULL){
+        imprimeArvore(T->right, nivel+1);
+        for(i=0; i<nivel; i++) printf("\t");
+        printf("%d:%d\n",T->chave,T->fatorBal);
+        imprimeArvore(T->left, nivel+1);
+    }
 }

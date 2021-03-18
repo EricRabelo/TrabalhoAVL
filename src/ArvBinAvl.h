@@ -40,8 +40,7 @@ int deleteAvl(NodeAvl **node, int chave); //Funcao de Remocao de um node (1)
 
 int heightAvl(NodeAvl *raiz); //Funcao que retona a altura da raiz
 
-void printAVL(NodeAvl *node); //Funcao para imprimir arvore (2)
-
+void imprimeArvore(NodeAvl *T, int nivel); //Funcao para imprimir arvore (2)
 /*Legenda:
     (1) int(compara)(void *, void*) -> Funcao implementada pelo programador usuário para verificar
         se o elemento buscado esta presente ou nao na AVL
