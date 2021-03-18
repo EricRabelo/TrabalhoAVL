@@ -11,6 +11,14 @@ VERSAO: 1.0
 int main(int argc, char const *argv[])
 {
     Avl *avl = criaAvl();
+    int i;
+    i = insertAvl(&(avl->raiz),15);
+    i = insertAvl(&(avl->raiz),3);
+    i = insertAvl(&(avl->raiz),4);
+    i = insertAvl(&(avl->raiz),5);
+    i = insertAvl(&(avl->raiz),6);
+
+    printAVL(avl->raiz);
 
     printf("\n");
     return 0;
