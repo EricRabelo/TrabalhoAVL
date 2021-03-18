@@ -29,18 +29,18 @@ typedef struct radizAvl{
 NodeAvl* criaNode(int chave); //Funcao que cria uma instancia do node
 Avl* criaAvl(); //Funcao que inicializa a arvore
 
-void simple_RightRotation(NodeAvl **node); //Funcao de Rotacao simples para a direita
-void simple_LeftRotation(NodeAvl **node); //Funcao de Rotacao simples para a esquerda
-void double_RightRotation(NodeAvl **node); //Funcao de Rotacao dupla para a direita
-void double_LeftRotation(NodeAvl **node); //Funcao de Rotacao dupla para a esquerda
+void RotationLL(NodeAvl **node); //Funcao de Rotacao simples para a direita
+void RotationRR(NodeAvl **node); //Funcao de Rotacao simples para a esquerda
+void RotationLR(NodeAvl **node); //Funcao de Rotacao dupla para a direita
+void RotationRL(NodeAvl **node); //Funcao de Rotacao dupla para a esquerda
 
-NodeAvl* insertAvl(NodeAvl *node, int chave); //Funcao de Insercao da arvore (1)
+int insertAvl(NodeAvl **node, int chave); //Funcao de Insercao da arvore (1)
 NodeAvl* searchAvl(NodeAvl *node, int chave); //Funcao de Busca de um node (1)
 int deleteAvl(NodeAvl *node, int chave); //Funcao de Remocao de um node (1)
 
 int heightAvl(NodeAvl *raiz); //Funcao que retona a altura da raiz
 
-int printAVL(NodeAvl *raiz); //Funcao para imprimir arvore (2)
+void printAVL(NodeAvl *node); //Funcao para imprimir arvore (2)
 
 /*Legenda:
     (1) int(compara)(void *, void*) -> Funcao implementada pelo programador usuário para verificar

@@ -11,16 +11,13 @@ ARQUIVO: .c
 NodeAvl* criaNode(int chave){
     NodeAvl *novo;
     novo = (NodeAvl*)malloc(sizeof(NodeAvl));
-
     if(novo == NULL){
         printf("Erro na alocacao!");
         exit(1);
     }
-
     novo->chave = chave;
     novo->fatorBal = 0;
     novo->right = novo->left = NULL;
-
     return novo;
 }
 
@@ -52,7 +49,7 @@ int heightAvl(NodeAvl *raiz){
 }
 
 //Funcao de Rotacao simples para a direita
-void simple_RightRotation(NodeAvl **node){
+void RotationLL(NodeAvl **node){
     NodeAvl *u = *node;
     NodeAvl *v = u->left;
     u->left = v->right;
@@ -63,7 +60,7 @@ void simple_RightRotation(NodeAvl **node){
 }
 
 //Funcao de Rotacao simples para a esquerda
-void simple_LeftRotation(NodeAvl **node){
+void RotationRR(NodeAvl **node){
     NodeAvl *u = *node;
     NodeAvl *v = u->right;
     u->right = v->left;
@@ -74,13 +71,68 @@ void simple_LeftRotation(NodeAvl **node){
 }
 
  //Funcao de Rotacao dupla para a direita
-void double_RightRotation(NodeAvl **node){
-    simple_LeftRotation(&(*node)->left);
-    simple_RightRotation(node);
+void RotationLR(NodeAvl **node){
+    RotationRR(&(*node)->left);
+    RotationLL(node);
 }
 
  //Funcao de Rotacao dupla para a esquerda
-void double_LeftRotation(NodeAvl **node){
-    simple_RightRotation(&(*node)->right);
-    simple_LeftRotation(node);
+void RotationRL(NodeAvl **node){
+    RotationLL(&(*node)->right);
+    RotationRR(node);
+}
+
+ //Funcao de Busca de um node (1)
+NodeAvl* searchAvl(NodeAvl *node, int chave){
+    if(!node) return NULL;
+    if(node->chave == chave) return node;
+    else{
+        if(node->chave > chave){
+            return searchAvl(node->left,chave);
+        }else{
+            return searchAvl(node->right,chave);
+        }
+    }
+}
+
+ //Funcao de Insercao da arvore
+int insertAvl(NodeAvl **node, int chave){
+    if(*node == NULL){
+        (*node) = criaNode(chave);
+        return 1;
+    } 
+    else{
+        if((*node)->chave == chave) return 0;
+        else{
+            if((*node)->chave > chave){
+
+                if(insertAvl(&(*node)->left, chave) == 1){
+                    if(labs(heightAvl((*node)->left) - heightAvl((*node)->right)) >= 2){
+                        if(chave < (*node)->left->chave) RotationLL(node);
+                        else RotationLR(node);
+                    }
+                }
+                return 0;
+            }else{
+                if((*node)->chave < chave){
+                    if(insertAvl(&(*node)->right, chave) == 1){
+                        if(labs(heightAvl((*node)->left) - heightAvl((*node)->right)) >= 2){
+                            if((*node)->right->chave < chave) RotationRR(node);
+                            else RotationRL(node);
+                        }
+                    }
+                }
+            }
+            if(heightAvl((*node)->left) > heightAvl((*node)->right)) (*node)->fatorBal = heightAvl((*node)->left) + 1;
+            else (*node)->fatorBal = heightAvl((*node)->right) + 1;
+            return 1;
+        }
+    }
+}
+
+void printAVL(NodeAvl *node){
+	if((!node)) return;
+	printAVL(node->left);
+	printf("%d ", node->chave);
+	printAVL(node->right);
 }
