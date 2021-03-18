@@ -12,11 +12,19 @@ int main(int argc, char const *argv[])
 {
     Avl *avl = criaAvl();
     int i;
-    i = insertAvl(&(avl->raiz),15);
-    i = insertAvl(&(avl->raiz),3);
+    i = insertAvl(&(avl->raiz),1);
     i = insertAvl(&(avl->raiz),4);
-    i = insertAvl(&(avl->raiz),5);
-    i = insertAvl(&(avl->raiz),6);
+    i = insertAvl(&(avl->raiz),7);
+    i = insertAvl(&(avl->raiz),10);
+    i = insertAvl(&(avl->raiz),13);
+    i = insertAvl(&(avl->raiz),16);
+    i = insertAvl(&(avl->raiz),19);
+    i = insertAvl(&(avl->raiz),22);
+    i = insertAvl(&(avl->raiz),25);
+    i = insertAvl(&(avl->raiz),28);
+
+    NodeAvl *ptr = searchAvl(&(*(avl->raiz)),19);
+    printf(" %d \n",ptr->chave);
 
     printAVL(avl->raiz);
 

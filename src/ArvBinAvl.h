@@ -36,7 +36,7 @@ void RotationRL(NodeAvl **node); //Funcao de Rotacao dupla para a esquerda
 
 int insertAvl(NodeAvl **node, int chave); //Funcao de Insercao da arvore (1)
 NodeAvl* searchAvl(NodeAvl *node, int chave); //Funcao de Busca de um node (1)
-int deleteAvl(NodeAvl *node, int chave); //Funcao de Remocao de um node (1)
+int deleteAvl(NodeAvl **node, int chave); //Funcao de Remocao de um node (1)
 
 int heightAvl(NodeAvl *raiz); //Funcao que retona a altura da raiz
 

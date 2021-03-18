@@ -107,25 +107,54 @@ int insertAvl(NodeAvl **node, int chave){
             if((*node)->chave > chave){
 
                 if(insertAvl(&(*node)->left, chave) == 1){
-                    if(labs(heightAvl((*node)->left) - heightAvl((*node)->right)) >= 2){
-                        if(chave < (*node)->left->chave) RotationLL(node);
-                        else RotationLR(node);
+                    // if(labs(heightAvl((*node)->left) - heightAvl((*node)->right)) >= 2){
+                    //     if(chave < (*node)->left->chave) RotationLL(node);
+                    //     else RotationLR(node);
+                    // }
+                    switch((*node)->fatorBal){
+                        case 1:
+                            if((*node)->left->fatorBal == 1) RotationLL(node);
+                            else RotationLR(node);
+                            break;
+                        case 0:
+                            (*node)->fatorBal = 1;
+                            break;
+                        case -1:
+                            (*node)->fatorBal = 0;
+                            break;
+                        default:
+                            break;
                     }
-                }
-                return 0;
+                    return 1;
+                }else return 0;
             }else{
                 if((*node)->chave < chave){
                     if(insertAvl(&(*node)->right, chave) == 1){
-                        if(labs(heightAvl((*node)->left) - heightAvl((*node)->right)) >= 2){
-                            if((*node)->right->chave < chave) RotationRR(node);
+                        // if(labs(heightAvl((*node)->left) - heightAvl((*node)->right)) >= 2){
+                        //     if((*node)->right->chave < chave) RotationRR(node);
+                        //     else RotationRL(node);
+                        // }
+                        switch ((*node)->fatorBal)
+                        {
+                        case 1:
+                            (*node)->fatorBal = 0;
+                            break;
+                        case 0:
+                            (*node)->fatorBal = -1;
+                            break;
+                        case -1:
+                            if((*node)->right->fatorBal == -1) RotationRR(node);
                             else RotationRL(node);
+                        default:
+                            break;
                         }
+                        return 1;
                     }
-                }
+                }else return 0;
             }
-            if(heightAvl((*node)->left) > heightAvl((*node)->right)) (*node)->fatorBal = heightAvl((*node)->left) + 1;
-            else (*node)->fatorBal = heightAvl((*node)->right) + 1;
-            return 1;
+            // if(heightAvl((*node)->left) > heightAvl((*node)->right)) (*node)->fatorBal = heightAvl((*node)->left) + 1;
+            // else (*node)->fatorBal = heightAvl((*node)->right) + 1;
+            return 0;
         }
     }
 }
