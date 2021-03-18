@@ -11,16 +11,13 @@ ARQUIVO: .c
 NodeAvl* criaNode(int chave){
     NodeAvl *novo;
     novo = (NodeAvl*)malloc(sizeof(NodeAvl));
-
     if(novo == NULL){
         printf("Erro na alocacao!");
         exit(1);
     }
-
     novo->chave = chave;
     novo->fatorBal = 0;
     novo->right = novo->left = NULL;
-
     return novo;
 }
 
@@ -38,24 +35,6 @@ Avl* criaAvl(){
     return ptr;
 }
 
-//Funcao que imprime a arvore no formato em-ordem
-void printAvl(NodeAvl *node){
-    if (!node) return;
-
-    printAvl(node->left);
-    printf(" %d ", node->chave);
-    printAvl(node->right);
-}
-
- //Funcao de Busca de um node
-NodeAvl* searchAvl(NodeAvl *node, int bool, int chave){
-    if(!node) return NULL;
-
-    if (chave < node->chave) return searchAvl(node->left, 1, chave);
-    else if (chave > node->chave) return searchAvl(node->right, 1, chave);
-    else return node;
-}
-
  //Funcao que retona a altura da raiz
 int heightAvl(NodeAvl *raiz){
     if(!raiz) return -1;
@@ -67,4 +46,112 @@ int heightAvl(NodeAvl *raiz){
 
     if(tam_dir > tam_esq) return tam_dir;
     else return tam_esq;
+}
+
+//Funcao de Rotacao simples para a direita
+void RotationLL(NodeAvl **node){
+    NodeAvl *u = *node;
+    NodeAvl *v = u->left;
+    u->left = v->right;
+    v->right = u;
+    v->fatorBal = 0;
+    u->fatorBal = 0;
+    *node = v; 
+}
+
+//Funcao de Rotacao simples para a esquerda
+void RotationRR(NodeAvl **node){
+    NodeAvl *u = *node;
+    NodeAvl *v = u->right;
+    u->right = v->left;
+    v->left = u;
+    u->fatorBal = 0;
+    v->fatorBal = 0;
+    *node = v;
+}
+
+ //Funcao de Rotacao dupla para a direita
+void RotationLR(NodeAvl **node){
+    RotationRR(&(*node)->left);
+    RotationLL(node);
+}
+
+ //Funcao de Rotacao dupla para a esquerda
+void RotationRL(NodeAvl **node){
+    RotationLL(&(*node)->right);
+    RotationRR(node);
+}
+
+ //Funcao de Busca de um node (1)
+NodeAvl* searchAvl(NodeAvl *node, int chave){
+    if(!node) return NULL;
+    if(node->chave == chave) return node;
+    else{
+        if(node->chave > chave){
+            return searchAvl(node->left,chave);
+        }else{
+            return searchAvl(node->right,chave);
+        }
+    }
+}
+
+ //Funcao de Insercao da arvore
+int insertAvl(NodeAvl **node, int chave){
+    if(*node == NULL){
+        (*node) = criaNode(chave);
+        return 1;
+    } 
+    else{
+        if((*node)->chave == chave) return 0;
+        else{
+            if((*node)->chave > chave){
+
+                if(insertAvl(&(*node)->left, chave) == 1){
+                    switch((*node)->fatorBal){
+                        case 1:
+                            if((*node)->left->fatorBal == 1) RotationLL(node);
+                            else RotationLR(node);
+                            break;
+                        case 0:
+                            (*node)->fatorBal = 1;
+                            break;
+                        case -1:
+                            (*node)->fatorBal = 0;
+                            break;
+                        default:
+                            break;
+                    }
+                    return 1;
+                }else return 0;
+            }else{
+                if((*node)->chave < chave){
+                    if(insertAvl(&(*node)->right, chave) == 1){
+                        switch ((*node)->fatorBal)
+                        {
+                        case 1:
+                            (*node)->fatorBal = 0;
+                            break;
+                        case 0:
+                            (*node)->fatorBal = -1;
+                            break;
+                        case -1:
+                            if((*node)->right->fatorBal == -1) RotationRR(node);
+                            else RotationRL(node);
+                        default:
+                            break;
+                        }
+                        return 1;
+                    }
+                }else return 0;
+            }
+            return 0;
+        }
+    }
+}
+
+void printAVL(NodeAvl *node){
+	if((!node)) return;
+	printAVL(node->left);
+	printf("%d ", node->chave);
+	printAVL(node->right);
 }
