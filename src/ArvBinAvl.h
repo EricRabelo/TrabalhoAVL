@@ -45,5 +45,7 @@ void imprimeArvore(NodeAvl *T, int nivel); //Funcao para imprimir arvore
 /*Demais funcoes*/
 void limparTela(); //Limpa a tela para melhor visualizaçao
 void menu(Avl *avl); //Apresenta um menu para realizacao das operacoes
+void destroyAvl(Avl *avl); //Destroi a arvore
+void auxDestroyAvl(NodeAvl *node) ;//Auxiliar de 'destroyAvl' que libera no por no
 
 #endif //ARVBINAVL_H

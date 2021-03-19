@@ -1,6 +1,6 @@
 /*
 TRABALHO DE IMPLEMENTACAO DE ARVORE BINARIA DE BUSCA BALANCEADA (AVL)
-AUTOR: LUIZ GUSTAVO FALQUETO
+AUTOR: LUIZ GUSTAVO FALQUETO e ERIC RABELO
 DATA CRIACAO: 11/03/2021
 ARQUIVO: .c
 */
@@ -202,6 +202,22 @@ void imprimeArvore(NodeAvl *T, int nivel){
     }
 }
 
+ //Auxiliar de 'destroyAvl' que libera no por no
+void auxDestroyAvl(NodeAvl *node){
+    if (!node) return;
+    auxDestroyAvl(node->left);
+    auxDestroyAvl(node->right);
+    free(node);
+    return;
+}
+
+
+ //Destroi a avl
+void destroyAvl(Avl *avl){
+    auxDestroyAvl(avl->raiz);
+    free(avl);
+}
+
 //Limpa a tela para melhor visualizaçao
 void limparTela(){
     system("cls||clear");
@@ -232,6 +248,7 @@ void menu(Avl *avl){
             imprimeArvore(avl->raiz, heightAvl(avl->raiz));
             break;
         case 2:
+            limparTela();
             printf("\nDeletando\n");
             printf("Digite um valor para deletar da AVL:\t");
             scanf("%d", &valor);
@@ -248,7 +265,7 @@ void menu(Avl *avl){
             printf("Digite um valor para pesquisar na AVL:\t");
             scanf("%d", &valor);
             NodeAvl *ptr = searchAvl(&(*(avl->raiz)),19);
-            printf("Chave: %d\n",avl->raiz->chave);
+            printf("Chave: %d\n",ptr->chave);
             printf("Fator de balanceamento: %d\n",avl->raiz->fatorBal);
             break;
         case 4:

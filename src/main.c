@@ -1,6 +1,6 @@
 /*
 TRABALHO DE IMPLEMENTACAO DE ARVORE BINARIA DE BUSCA BALANCEADA (AVL)
-AUTOR: LUIZ GUSTAVO FALQUETO
+AUTOR: LUIZ GUSTAVO FALQUETO e ERIC RABELO
 DATA CRIACAO: 11/03/2021
 ARQUIVO: main.c
 VERSAO: 1.0
@@ -16,6 +16,7 @@ int main(int argc, char const *argv[])
     //Apresentando o MENU PRINCIPAL
     menu(avl);
 
+    destroyAvl(avl);
     printf("\n");
     return 0;
 }
