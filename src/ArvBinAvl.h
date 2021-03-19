@@ -21,7 +21,7 @@ typedef struct nodeAvl{
 }NodeAvl;
 
 /*------------------------------------------ Estrutura da raiz da arvore -------------------------------------*/
-typedef struct radizAvl{
+typedef struct radixAvl{
     NodeAvl *raiz;
 }Avl;
 
@@ -34,17 +34,16 @@ void RotationRR(NodeAvl **node); //Funcao de Rotacao simples para a esquerda
 void RotationLR(NodeAvl **node); //Funcao de Rotacao dupla para a direita
 void RotationRL(NodeAvl **node); //Funcao de Rotacao dupla para a esquerda
 
-int insertAvl(NodeAvl **node, int chave); //Funcao de Insercao da arvore (1)
-NodeAvl* searchAvl(NodeAvl *node, int chave); //Funcao de Busca de um node (1)
-int deleteAvl(NodeAvl **node, int chave); //Funcao de Remocao de um node (1)
+int insertAvl(NodeAvl **node, int chave); //Funcao de Insercao da arvore
+NodeAvl* searchAvl(NodeAvl *node, int chave); //Funcao de Busca de um node
+int deleteAvl(NodeAvl **node, int chave); //Funcao de Remocao de um node
 
 int heightAvl(NodeAvl *raiz); //Funcao que retona a altura da raiz
 
-void imprimeArvore(NodeAvl *T, int nivel); //Funcao para imprimir arvore (2)
-/*Legenda:
-    (1) int(compara)(void *, void*) -> Funcao implementada pelo programador usuário para verificar
-        se o elemento buscado esta presente ou nao na AVL
-    (2) void (printFunction)(void *, void *) -> 
-*/
+void imprimeArvore(NodeAvl *T, int nivel); //Funcao para imprimir arvore
+
+/*Demais funcoes*/
+void limparTela(); //Limpa a tela para melhor visualizaçao
+void menu(Avl *avl); //Apresenta um menu para realizacao das operacoes
 
 #endif //ARVBINAVL_H

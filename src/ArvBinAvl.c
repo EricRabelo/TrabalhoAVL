@@ -143,13 +143,132 @@ int insertAvl(NodeAvl **node, int chave){
     }
 }
 
+NodeAvl *findSmallestElementAVL(NodeAvl *node){
+    if(!node->left) return node;
+    else return findSmallestElementAVL(node->left);
+}
+
+int deleteAvl(NodeAvl **node, int chave){
+
+    if (!(*node)) return 0;
+    if(chave<(*node)->chave){ //se a chave que quero remover é menor que o nó
+        if(deleteAvl(&(*node)->left, chave)==1){ //Como foi removida do lado esquerdo, preciso verificar se preciso balancear a arvore da direita
+            if(balanceAVL(*node)>=2){
+                if (heightAvl((*node)->right->left)<=heightAvl((*node)->right->right)) RotationRR(node);
+                else RotationRL(node);
+            }
+            (*node)->fatorBal = heightAvl((*node)->left) - heightAvl((*node)->right);
+        }
+    }
+    if(chave>(*node)->chave){ //se a chave que quero remover é maior que o nó
+        if(deleteAvl(&(*node)->right, chave)==1){ //Como foi removida do lado direito, preciso verificar se preciso balancear a arvore da esquerda
+            if(balanceAVL(*node)>=2){
+                if (heightAvl((*node)->left->right)<=heightAvl((*node)->left->left)) RotationLL(node);
+                else RotationLR(node);
+            }
+            (*node)->fatorBal = heightAvl((*node)->left) - heightAvl((*node)->right);
+        }
+    }
+    if(chave==(*node)->chave){
+        if(((*node)->left==NULL || (*node)->right==NULL)){ //O pai tem 1 ou 0 filhos;
+            NodeAvl *Remover=(*node); //Aponta pro nó a ser removido
+            if((*node)->left!=NULL)  *node=(*node)->left;
+            else *node=(*node)->right;
+            free(Remover);
+        }else{ //o pai tem 2 filhos;
+            NodeAvl *temp=findSmallestElementAVL((*node)->right); //Procura a menor chave da subarvore a direita
+            (*node)->chave=temp->chave; //Nó atual recebe a menor chave
+            if(deleteAvl(&(*node)->right, (*node)->chave)){ //chama a função delete para remover a menor chave da subarvore a direita (que nao tem nenhum filho)
+                if(balanceAVL(*node)>=2){
+                    if(heightAvl((*node)->left->right)<=heightAvl((*node)->left->left)) RotationLL(node);
+                    else RotationLR(node);
+                }
+                (*node)->fatorBal = heightAvl((*node)->left) - heightAvl((*node)->right);
+            }  
+        }
+    }
+
+    return 1;
+}
+
 
 void imprimeArvore(NodeAvl *T, int nivel){
     int i;
     if(T!=NULL){
         imprimeArvore(T->right, nivel+1);
         for(i=0; i<nivel; i++) printf("\t");
-        printf("%d:%d\n",T->chave,T->fatorBal);
+        printf("(%d):%d\n",T->chave,T->fatorBal);
         imprimeArvore(T->left, nivel+1);
+    }
+}
+
+//Limpa a tela para melhor visualizaçao
+void limparTela(){
+    system("cls||clear");
+}
+
+//Apresenta um menu para realizacao das operacoes
+void menu(Avl *avl){
+    printf("\n ============================= MENU INICIAL ======================\n\n");
+    int opcao=1, insert, delete;
+    int valor;
+
+    while(opcao > 0 && opcao < 4.1){
+        printf("\nDeseja: Inserir(1) - Deletar(2) - Pesquisar(3) - Imprimir(4) - Sair(0) ? \n");
+        scanf("%d",&opcao);
+        
+        switch (opcao)
+        {
+        case 1:
+            limparTela();
+            printf("\nInserindo\n");
+            printf("Digite um valor para inserir na AVL:\t");
+            scanf("%d", &valor);
+            insert = insertAvl(&(avl->raiz),valor);
+
+            if(insert) printf("\nInsercao concluida!\n\n");
+            else printf("\nErro na insercao!\n");
+            printf("Imprimindo arvore...\n\n");
+            imprimeArvore(avl->raiz, heightAvl(avl->raiz));
+            break;
+        case 2:
+            printf("\nDeletando\n");
+            printf("Digite um valor para deletar da AVL:\t");
+            scanf("%d", &valor);
+            delete = deleteAvl(&(avl->raiz),valor);
+
+            if(delete) printf("\nRemocao concluida!\n\n");
+            else printf("\nErro na remocao!\n");
+            printf("Imprimindo arvore...\n\n");
+            imprimeArvore(avl->raiz, heightAvl(avl->raiz));
+            break;
+        case 3:
+            limparTela();
+            printf("\nPesquisando\n");
+            printf("Digite um valor para pesquisar na AVL:\t");
+            scanf("%d", &valor);
+            NodeAvl *ptr = searchAvl(&(*(avl->raiz)),19);
+            printf("Chave: %d\n",avl->raiz->chave);
+            printf("Fator de balanceamento: %d\n",avl->raiz->fatorBal);
+            break;
+        case 4:
+            limparTela();
+            if(avl->raiz == NULL) printf("Arvore vazia!\n");
+            else{
+                printf("\nImprimindo a arvore:\n");
+                imprimeArvore(avl->raiz, heightAvl(avl->raiz));
+            }
+            break;
+        default:
+            limparTela();
+            printf("\nFinalizando programa!\n");
+            if(avl->raiz == NULL) printf("Arvore vazia!\n");
+            else{
+                printf("\nArvore final:\n");
+                imprimeArvore(avl->raiz, heightAvl(avl->raiz));
+            }
+            break;
+        }
+        
     }
 }
