@@ -15,8 +15,8 @@ ARQUIVO: .h
 /*------------------------------------------ Estrutura dos nohs da arvore ------------------------------------*/
 
 typedef struct nodeAvl{
+    void *chave;
     int fatorBal;
-    int chave;
     struct nodeAvl *right, *left;
 }NodeAvl;
 
@@ -26,7 +26,7 @@ typedef struct radixAvl{
 }Avl;
 
 /*------------------------------------------ Assinaturas das funcoes -----------------------------------------*/
-NodeAvl* criaNode(int chave); //Funcao que cria uma instancia do node
+NodeAvl* criaNode(void *chave); //Funcao que cria uma instancia do node
 Avl* criaAvl(); //Funcao que inicializa a arvore
 
 void RotationLL(NodeAvl **node); //Funcao de Rotacao simples para a direita
@@ -34,13 +34,13 @@ void RotationRR(NodeAvl **node); //Funcao de Rotacao simples para a esquerda
 void RotationLR(NodeAvl **node); //Funcao de Rotacao dupla para a direita
 void RotationRL(NodeAvl **node); //Funcao de Rotacao dupla para a esquerda
 
-int insertAvl(NodeAvl **node, int chave); //Funcao de Insercao da arvore
-NodeAvl* searchAvl(NodeAvl *node, int chave); //Funcao de Busca de um node
-int deleteAvl(NodeAvl **node, int chave); //Funcao de Remocao de um node
+int insertAvl(NodeAvl **node, void *chave, int (compararValores)(void*,void*)); //Funcao de Insercao da arvore
+// NodeAvl* searchAvl(NodeAvl *node, void *chave, int (compararValores)(void*, void*)); //Funcao de Busca de um node
+// int deleteAvl(NodeAvl **node, int chave); //Funcao de Remocao de um node
 
 int heightAvl(NodeAvl *raiz); //Funcao que retona a altura da raiz
 
-void imprimeArvore(NodeAvl *T, int nivel); //Funcao para imprimir arvore
+void imprimeArvore(NodeAvl *T, int nivel, void (imprimirArvore)(void*,void*)); //Funcao para imprimir arvore
 
 /*Demais funcoes*/
 void limparTela(); //Limpa a tela para melhor visualizaçao
