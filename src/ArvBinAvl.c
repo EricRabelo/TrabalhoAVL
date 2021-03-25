@@ -95,9 +95,9 @@ void RotationRL(NodeAvl **node){
  //Funcao de Busca de um node (1)
 NodeAvl* searchAvl(NodeAvl *node, void *chave, int (compararValores)(void*, void*)){
     if(!node) return NULL;
-    if(compararValores(node->chave, chave) == 0) return node;
+    if(compararValores(node->info, chave) == 0) return node;
     else{
-        if(compararValores(node->chave, chave) > 0){
+        if(compararValores(node->info, chave) > 0){
             return searchAvl(node->left,chave,compararValores);
         }else{
             return searchAvl(node->right,chave,compararValores);
@@ -112,29 +112,24 @@ int insertAvl(NodeAvl **node, NodeAvl *novo, int (comparaValores)(void*,void*)){
         return 1;
     }
     else{
-        // if((*node)->chave == novo->chave) return 0;
-        if(comparaValores((*node)->chave,novo->chave)==0) return 0;
+        if(comparaValores((*node)->info,novo->info)==0) return 0;
         else{
-            // if((*node)->chave > novo->chave){
-            if(comparaValores((*node)->chave,novo->chave)>0){
+            if(comparaValores((*node)->info,novo->info)>0){
 
                 if(insertAvl(&(*node)->left, novo, comparaValores) == 1){
 
                     if(balanceAVL(*node) >= 2){
-                        // if(novo->chave < (*node)->left->chave){
-                        if(comparaValores(novo->chave,(*node)->left->chave)<0){
+                        if(comparaValores(novo->info,(*node)->left->info)<0){
                             RotationLL(node);
                         }else RotationLR(node);
                     }
                 }
             }else{
-                // if((*node)->chave < novo->chave){
-                if(comparaValores((*node)->chave,novo->chave)<0){
+                if(comparaValores((*node)->info,novo->info)<0){
                     if(insertAvl(&(*node)->right, novo, comparaValores) == 1){
 
                         if(balanceAVL(*node) >= 2){
-                            // if(novo->chave > (*node)->right->chave){
-                            if(comparaValores(novo->chave ,(*node)->right->chave)>0){
+                            if(comparaValores(novo->info ,(*node)->right->info)>0){
                                 RotationRR(node);
                             }else RotationRL(node);
                         }
@@ -155,8 +150,7 @@ NodeAvl *findSmallestElementAVL(NodeAvl *node){
 NodeAvl *deleteAvl(NodeAvl **node, void *chave, int (compararValores)(void*,void*),void freeInfo(NodeAvl* node)){
     if (!(*node)) return 0;
     NodeAvl *Remover;
-    // if(chave<(*node)->chave){ //se a chave que quero remover é menor que o nó
-    if(compararValores(chave,(*node)->chave) < 0){
+    if(compararValores(chave,(*node)->info) < 0){ //Se a chave que quero remover é menor que o nó
         if(Remover = deleteAvl(&(*node)->left, chave, compararValores,freeInfo)){ //Como foi removida do lado esquerdo, preciso verificar se preciso balancear a arvore da direita
             if(balanceAVL(*node)>=2){
                 if (heightAvl((*node)->right->left)<=heightAvl((*node)->right->right)) RotationRR(node);
@@ -165,8 +159,7 @@ NodeAvl *deleteAvl(NodeAvl **node, void *chave, int (compararValores)(void*,void
             (*node)->fatorBal = heightAvl((*node)->left) - heightAvl((*node)->right);
         }
     }
-    // if(chave>(*node)->chave){ //se a chave que quero remover é maior que o nó
-    if(compararValores(chave,(*node)->chave) > 0){
+    if(compararValores(chave,(*node)->info) > 0){ //Se a chave que quero remover é maior que o nó
         if(Remover = deleteAvl(&(*node)->right, chave, compararValores,freeInfo)){ //Como foi removida do lado direito, preciso verificar se preciso balancear a arvore da esquerda
             if(balanceAVL(*node)>=2){
                 if (heightAvl((*node)->left->right)<=heightAvl((*node)->left->left)) RotationLL(node);
@@ -175,8 +168,7 @@ NodeAvl *deleteAvl(NodeAvl **node, void *chave, int (compararValores)(void*,void
             (*node)->fatorBal = heightAvl((*node)->left) - heightAvl((*node)->right);
         }
     }
-    // if(chave==(*node)->chave){
-    if(compararValores(chave,(*node)->chave) == 0){
+    if(compararValores(chave,(*node)->info) == 0){ //Encontrou a chave
         if(((*node)->left==NULL || (*node)->right==NULL)){ //O pai tem 1 ou 0 filhos;
             Remover = (*node); //Aponta pro nó a ser removido
             if((*node)->left!=NULL)  *node=(*node)->left;
@@ -184,9 +176,9 @@ NodeAvl *deleteAvl(NodeAvl **node, void *chave, int (compararValores)(void*,void
         }else{ //o pai tem 2 filhos;
             NodeAvl *temp=findSmallestElementAVL((*node)->right); //Procura a menor chave da subarvore a direita
             freeInfo(*node);
-            (*node)->chave=temp->chave; //Nó atual recebe a menor chave
+            (*node)->info=temp->info; //Nó atual recebe a menor chave
             (*node)->info=temp->info;
-            if(Remover = deleteAvl(&(*node)->right, (*node)->chave, compararValores, freeInfo)){ //chama a função delete para remover a menor chave da subarvore a direita (que nao tem nenhum filho)
+            if(Remover = deleteAvl(&(*node)->right, (*node)->info, compararValores, freeInfo)){ //chama a função delete para remover a menor chave da subarvore a direita (que nao tem nenhum filho)
                 if(balanceAVL(*node)>=2){
                     if(heightAvl((*node)->left->right)<=heightAvl((*node)->left->left)) RotationLL(node);
                     else RotationLR(node);
@@ -223,9 +215,4 @@ void auxDestroyAvl(NodeAvl *node){
 void destroyAvl(Avl *avl){
     auxDestroyAvl(avl->raiz);
     free(avl);
-}
-
-//Limpa a tela para melhor visualizaçao
-void limparTela(){
-    system("cls||clear");
 }
