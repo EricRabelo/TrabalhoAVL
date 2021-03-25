@@ -15,45 +15,101 @@ ARQUIVO: .h
 /*------------------------------------------ Estrutura dos nohs da arvore ------------------------------------*/
 
 typedef struct nodeAvl{
-    void *info;
-    void *chave;
-    int fatorBal;
-    struct nodeAvl *right, *left;
+    void *info; //Chave generica (deve ser declarada no arquivo teste)
+    int fatorBal; //Fator de balanceamento do no
+    struct nodeAvl *right, *left; //Ponteiros para os filhos do no
 }NodeAvl;
 
-/*------------------------------------------ Estrutura da raiz da arvore -------------------------------------*/
+/*------------------------------------------ Estrutura da raiz da arvore ----------------------------------*/
 typedef struct radixAvl{
-    NodeAvl *raiz;
+    NodeAvl *raiz; //Raiz da arvore (No-Cabeca)
 }Avl;
 
-/*------------------------------------------ Assinaturas das funcoes -----------------------------------------*/
-NodeAvl* criaNode(); //Funcao que cria uma instancia do node
-Avl* criaAvl(); //Funcao que inicializa a arvore
+/*------------------------------------------ Assinaturas das funcoes -------------------------------------*/
 
+/* ==================================  Funcoes de criacao da arvore  =====================================*/
 
+/*  Funcao que cria uma instancia do node
+    Entrada: void
+    Saida: instancia de NodeAvl
+*/
+NodeAvl* criaNode();
+
+/*  Funcao que inicializa a arvore
+    Entrada: void
+    Saida: instancia de Avl
+*/
+Avl* criaAvl();
+
+/* ==================================  Funcoes de rotacao da arvore  =====================================*/
+
+/*  
+    Entrada: NodeAvl **node (No critico)
+    Saida: void
+*/
 void RotationLL(NodeAvl **node); //Funcao de Rotacao simples para a direita
 void RotationRR(NodeAvl **node); //Funcao de Rotacao simples para a esquerda
 void RotationLR(NodeAvl **node); //Funcao de Rotacao dupla para a direita
 void RotationRL(NodeAvl **node); //Funcao de Rotacao dupla para a esquerda
 
-/*As funcoes de Inserir, Remover e Buscar na arvore, utilizam como parametros, alem do nó usado,
-uma chave generica e uma funcao de compara valores genericas que e definidada pelo programador usuario*/
+/* ==================================  Funcao de Insercao da arvore  =====================================*/
+/*
+    Entrada: (1) NodeAvl **node (Raiz da arvore/subarvore)
+             (2) NodeAvl *novo (No a ser inserido)
+             (3) int (compararValores)(void*,void*) -> Funcao que compara as informacoes dos nos,
+                 deve ser implementada no arquivo teste
+    Saida: 1 se inseriu ou 0 se nao inseriu
+*/
+int insertAvl(NodeAvl **node, NodeAvl *novo, int (compararValores)(void*,void*)); 
 
-int insertAvl(NodeAvl **node, NodeAvl *novo, int (compararValores)(void*,void*)); //Funcao de Insercao da arvore
-NodeAvl* searchAvl(NodeAvl *node, void *chave, int (comparaValores)(void*,void*)); //Funcao de Busca de um node
+/* ==================================  Funcao de Busca da arvore  ========================================*/
+/*  
+    Entrada: (1) NodeAvl **node (Raiz da arvore/subarvore)
+             (2) void *chave (Valor a ser buscado)
+             (3) int (compararValores)(void*,void*) -> Funcao que compara as informacoes dos nos,
+                 deve ser implementada no arquivo teste
+    Saida: No que possui a chave buscada ou NULL
+*/
+NodeAvl* searchAvl(NodeAvl *node, void *chave, int (comparaValores)(void*,void*));
 
-/*Funcao Remover recebe como parametro a funcao generica freeInfo para 
-remocao da informacao do no a ser removido*/
-NodeAvl* deleteAvl(NodeAvl **node, void *chave, int (compararValores)(void*,void*), void freeInfo(NodeAvl* node)); //Funcao de Remocao de um node
+/* ==================================  Funcao de Remocao da arvore  ======================================*/
+/*  
+    Entrada: (1) NodeAvl **node (Raiz da arvore/subarvore)
+             (2) void *chave (Valor a ser removido)
+             (3) int (compararValores)(void*,void*) -> Funcao que compara as informacoes dos nos,
+                 deve ser implementada no arquivo teste
+    Saida: No que possui a chave buscada ou NULL
+*/
+NodeAvl* deleteAvl(NodeAvl **node, void *chave, int (compararValores)(void*,void*), void freeInfo(NodeAvl* node));
 
-int heightAvl(NodeAvl *raiz); //Funcao que retona a altura do nó
+/* =============================  Funcao que retorna altura da arvore  ===================================*/
+/*  
+    Entrada: (1) NodeAvl *raiz (Raiz da arvore/subarvore)
+    Saida: Altura da arvore/subarvore inserida
+*/
+int heightAvl(NodeAvl *raiz);
 
-/*Essa funcao recebe uma funcao genérica para impressao*/
-void printAvl(NodeAvl *raiz, int nivel,void (imprimeNo)(void*,void*)); //Funcao que imprime uma arvore
+/* =================================  Funcao que imprime a  arvore  ======================================*/
+/*  
+    Entrada: (1) NodeAvl *raiz (Raiz da arvore/subarvore)
+             (2) int nivel (Altura da arvore)
+             (3) int (imprimeNo)(void*,void*) -> Funcao imprime a informacao do no,
+                 deve ser implementada no arquivo teste
+    Saida: void
+*/
+void printAvl(NodeAvl *raiz, int nivel,void (imprimeNo)(void*,void*));
 
-/*Demais funcoes*/
-void limparTela(); //Limpa a tela para melhor visualizaçao
+/* ===============================  Funcao que libera a memoria  =========================================*/
+/*  
+    Entrada: (1) Avl *avl (Raiz da arvore/subarvore)
+    Saida: void
+*/
 void destroyAvl(Avl *avl); //Destroi a arvore
+
+/*  
+    Entrada: (1) NodeAvl *node (Raiz da arvore/subarvore)
+    Saida: void
+*/
 void auxDestroyAvl(NodeAvl *node) ;//Auxiliar de 'destroyAvl' que libera nó por nó
 
 #endif //ARVBINAVL_H
