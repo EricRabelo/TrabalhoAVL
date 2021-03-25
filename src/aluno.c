@@ -6,36 +6,36 @@
 /*------------------------------------------ Estrutura da info do no -----------------------------------------*/
 
 typedef struct info{
-    char *campo1;
-    char *campo2;
-    char *campo3;
+    int matricula;
+    char *nome;
+    char *disciplina;
 }Info;
 
 
 Info *createInfo(){
 	Info *info;
-    char key1[50],key2[50],key3[50];
+    char key2[50],key3[50];
+    int key1;
 
-	if((info=(Info *)malloc(sizeof(Info))) && (info->campo1=(char *)malloc(sizeof(char))) && (info->campo2=(char *)malloc(sizeof(char))) && (info->campo3=(char *)malloc(sizeof(char)))){ //se o espaço para o elemento info e info->key for mallocado;
+	if((info=(Info *)malloc(sizeof(Info))) && (info->nome=(char *)malloc(sizeof(char))) && (info->disciplina=(char *)malloc(sizeof(char)))){ //se o espaço para o elemento info e info->key for mallocado;
         
         printf("Digite o nome do aluno: ");
-        scanf("%s",key1);
-        printf("Digite a matricula: ");
         scanf("%s",key2);
-        printf("Digite a idade: ");
+        printf("Digite a matricula: ");
+        scanf("%d",&key1);
+        printf("Digite a disciplina: ");
         scanf("%s",key3);
 
-        strcpy(info->campo1,key1);
-        strcpy(info->campo2,key2);
-        strcpy(info->campo3,key3);
+        strcpy(info->nome,key2);
+        info->matricula = key1;
+        strcpy(info->disciplina,key3);
 	}
 	return info;
 }
 
-NodeAvl *auxCriaNode(Info *inf, char *chave){
+NodeAvl *auxCriaNode(Info *inf){
     NodeAvl *novo = criaNode();
     novo->info = inf;
-    novo->chave = chave;
     return novo;
 }
 
@@ -45,33 +45,37 @@ Info* fazerCastInfo(NodeAvl* node){
 
 void freeInfo(NodeAvl* node){
     Info *inf = fazerCastInfo(node);
-    free(inf->campo1);
-    free(inf->campo2);
-    free(inf->campo3);
+    free(inf->nome);
+    free(inf->disciplina);
     free(inf);
 }
 
 void imprimeNo(void *ptr, void *info){
     NodeAvl *node = (NodeAvl*)ptr;
     Info *inf = (Info*)info;
-    char *chave = (char*)inf->campo1;
-    printf("(%s):%d\n",chave,node->fatorBal);
+    int chave = inf->matricula;
+    printf("(%d):%d\n",chave,node->fatorBal);
 }
 
 void imprimeInfo(NodeAvl *node){
     Info *inf;
     inf=fazerCastInfo(node);
     if(!inf) return;
-    printf("\nNome aluno: %s", inf->campo1);
-    printf("\nMatricula: %s", inf->campo2);
-    printf("\nIdade: %s\n", inf->campo3);
+    printf("\nNome aluno: %s", inf->nome);
+    printf("\nMatricula: %d", inf->matricula);
+    printf("\nDisciplina: %s\n", inf->disciplina);
 }
 
 int compararValores(void *val1, void *val2){
-    char *value1 = (char*)val1;
-    char *value2 = (char*)val2;
+    Info *inf1 = (Info*)val1;
+    Info *inf2 = (Info*)val2;
 
-    return strcmp(value1,value2);
+    int value1 = inf1->matricula;
+    int value2 = inf2->matricula;
+
+    if(value1 == value2) return 0;
+    else if(value1 > value2) return 1;
+    else return -1;
 }
 
 void menu(){
@@ -79,21 +83,21 @@ void menu(){
     printf("\n ============================= MENU INICIAL ======================\n\n");
     int opcao=1, insert;
     int valor;
-    char key1[50];
 
     Avl *avl = criaAvl();
 
     while(opcao > 0 && opcao < 4.1){
         printf("\nDeseja: Inserir(1) - Deletar(2) - Pesquisar(3) - Imprimir(4) - Sair(0) ? \n");
+        printf("Resposta: ");
         scanf("%d",&opcao);
 
         switch (opcao)
         {
             case 1:
-                limparTela();
+                system("cls||clear");
                 printf("\nInserindo\n");
                 Info *inf = createInfo();
-                NodeAvl *novo = auxCriaNode(inf,inf->campo1);
+                NodeAvl *novo = auxCriaNode(inf);
                 if(!novo || !inf){
                     printf("Erro de alocacao!\n");
                     exit(1);
@@ -108,15 +112,15 @@ void menu(){
                 }else printf("Arvore vazia!\n\n");
                 break;
             case 2:
-                limparTela();
+                system("cls||clear");
                 printf("\nDeletando\n");
                 printf("\nArvore atual:\n");
                 printAvl(avl->raiz, heightAvl(avl->raiz), imprimeNo);
-                printf("Digite o nome do aluno para deletar da AVL:\t");
-                scanf("%s", key1);
+                printf("Digite a matricula do aluno para deletar da AVL:\t");
+                scanf("%d", &valor);
                 NodeAvl *delete;
 
-                delete = deleteAvl(&(avl->raiz),key1,compararValores,freeInfo);
+                delete = deleteAvl(&(avl->raiz),&valor,compararValores,freeInfo);
                 
                 if(delete) printf("\nRemocao concluida!\n\n");
                 else printf("\nErro na remocao!\n");
@@ -127,29 +131,29 @@ void menu(){
                 printAvl(avl->raiz, heightAvl(avl->raiz), imprimeNo);
                 break;
             case 3:
-                limparTela();
+                system("cls||clear");
                 printf("\nPesquisando\n");
-                printf("Digite o nome do aluno para pesquisar na AVL:\t");
-                scanf("%s", key1);
+                printf("Digite a matricula do aluno para pesquisar na AVL:\t");
+                scanf("%d", &valor);
 
-                NodeAvl *ptr = searchAvl(&(*(avl->raiz)),key1,compararValores);
+                NodeAvl *ptr = searchAvl(&(*(avl->raiz)),&valor,compararValores);
                 if(ptr) imprimeInfo(ptr);
-
+                else printf("\nAluno nao matriculado\n");
                 break;
             case 4:
-                limparTela();
+                system("cls||clear");
                 if(avl->raiz == NULL) printf("Arvore vazia!\n");
                 else{
-                    printf("\nImprimindo a arvore:\n");
+                    printf("\nImprimindo a arvore:\n\n");
                     printAvl(avl->raiz, heightAvl(avl->raiz), imprimeNo);
                 }
                 break;
             default:
-                limparTela();
+                system("cls||clear");
                 printf("\nFinalizando programa!\n");
                 if(avl->raiz == NULL) printf("Arvore vazia!\n");
                 else{
-                    printf("\nArvore final:\n");
+                    printf("\nArvore final:\n\n");
                     printAvl(avl->raiz, heightAvl(avl->raiz), imprimeNo);
                 }
                 break;
@@ -157,4 +161,12 @@ void menu(){
 
     }
     destroyAvl(avl);
+}
+
+int main(void)
+{
+    menu();
+
+    printf("\n");
+    return 0;
 }
