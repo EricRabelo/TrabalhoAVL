@@ -8,14 +8,13 @@ ARQUIVO: .c
 #include "ArvBinAvl.h"
 
 // Funcao que cria uma instancia do node
-NodeAvl* criaNode(void *chave){
+NodeAvl* criaNode(){
     NodeAvl *novo;
     novo = (NodeAvl*)malloc(sizeof(NodeAvl));
     if(novo == NULL){
         printf("Erro na alocacao!");
         exit(1);
     }
-    novo->chave = chave;
     novo->fatorBal = 0;
     novo->right = novo->left = NULL;
     return novo;
@@ -98,7 +97,7 @@ NodeAvl* searchAvl(NodeAvl *node, void *chave, int (compararValores)(void*, void
     if(!node) return NULL;
     if(compararValores(node->chave, chave) == 0) return node;
     else{
-        if(compararValores(node->chave, chave) == 1){
+        if(compararValores(node->chave, chave) > 0){
             return searchAvl(node->left,chave,compararValores);
         }else{
             return searchAvl(node->right,chave,compararValores);
@@ -107,30 +106,35 @@ NodeAvl* searchAvl(NodeAvl *node, void *chave, int (compararValores)(void*, void
 }
 
  //Funcao de Insercao da arvore
-int insertAvl(NodeAvl **node, void *chave, int (compararValores)(void*,void*)){
+int insertAvl(NodeAvl **node, NodeAvl *novo, int (comparaValores)(void*,void*)){
     if(*node == NULL){
-        (*node) = criaNode(chave);
+        (*node) = novo;
         return 1;
-    } 
+    }
     else{
-        if(compararValores((*node)->chave, chave) == 0) return 0;
+        // if((*node)->chave == novo->chave) return 0;
+        if(comparaValores((*node)->chave,novo->chave)==0) return 0;
         else{
-            if(compararValores((*node)->chave, chave) == 1){
+            // if((*node)->chave > novo->chave){
+            if(comparaValores((*node)->chave,novo->chave)>0){
 
-                if(insertAvl(&(*node)->left, chave, compararValores) == 1){
-                    
+                if(insertAvl(&(*node)->left, novo, comparaValores) == 1){
+
                     if(balanceAVL(*node) >= 2){
-                        if(chave < (*node)->left->chave){
+                        // if(novo->chave < (*node)->left->chave){
+                        if(comparaValores(novo->chave,(*node)->left->chave)<0){
                             RotationLL(node);
                         }else RotationLR(node);
                     }
                 }
             }else{
-                if(compararValores((*node)->chave, chave) == -1){
-                    if(insertAvl(&(*node)->right, chave, compararValores) == 1){
-                        
+                // if((*node)->chave < novo->chave){
+                if(comparaValores((*node)->chave,novo->chave)<0){
+                    if(insertAvl(&(*node)->right, novo, comparaValores) == 1){
+
                         if(balanceAVL(*node) >= 2){
-                            if(chave > (*node)->right->chave){
+                            // if(novo->chave > (*node)->right->chave){
+                            if(comparaValores(novo->chave ,(*node)->right->chave)>0){
                                 RotationRR(node);
                             }else RotationRL(node);
                         }
@@ -148,76 +152,62 @@ NodeAvl *findSmallestElementAVL(NodeAvl *node){
     else return findSmallestElementAVL(node->left);
 }
 
-// int deleteAvl(NodeAvl **node, int chave){
-
-//     if (!(*node)) return 0;
-//     if(chave<(*node)->chave){ //se a chave que quero remover é menor que o nó
-//         if(deleteAvl(&(*node)->left, chave)==1){ //Como foi removida do lado esquerdo, preciso verificar se preciso balancear a arvore da direita
-//             if(balanceAVL(*node)>=2){
-//                 if (heightAvl((*node)->right->left)<=heightAvl((*node)->right->right)) RotationRR(node);
-//                 else RotationRL(node);
-//             }
-//             (*node)->fatorBal = heightAvl((*node)->left) - heightAvl((*node)->right);
-//         }
-//     }
-//     if(chave>(*node)->chave){ //se a chave que quero remover é maior que o nó
-//         if(deleteAvl(&(*node)->right, chave)==1){ //Como foi removida do lado direito, preciso verificar se preciso balancear a arvore da esquerda
-//             if(balanceAVL(*node)>=2){
-//                 if (heightAvl((*node)->left->right)<=heightAvl((*node)->left->left)) RotationLL(node);
-//                 else RotationLR(node);
-//             }
-//             (*node)->fatorBal = heightAvl((*node)->left) - heightAvl((*node)->right);
-//         }
-//     }
-//     if(chave==(*node)->chave){
-//         if(((*node)->left==NULL || (*node)->right==NULL)){ //O pai tem 1 ou 0 filhos;
-//             NodeAvl *Remover=(*node); //Aponta pro nó a ser removido
-//             if((*node)->left!=NULL)  *node=(*node)->left;
-//             else *node=(*node)->right;
-//             free(Remover);
-//         }else{ //o pai tem 2 filhos;
-//             NodeAvl *temp=findSmallestElementAVL((*node)->right); //Procura a menor chave da subarvore a direita
-//             (*node)->chave=temp->chave; //Nó atual recebe a menor chave
-//             if(deleteAvl(&(*node)->right, (*node)->chave)){ //chama a função delete para remover a menor chave da subarvore a direita (que nao tem nenhum filho)
-//                 if(balanceAVL(*node)>=2){
-//                     if(heightAvl((*node)->left->right)<=heightAvl((*node)->left->left)) RotationLL(node);
-//                     else RotationLR(node);
-//                 }
-//                 (*node)->fatorBal = heightAvl((*node)->left) - heightAvl((*node)->right);
-//             }  
-//         }
-//     }
-
-//     return 1;
-// }
-
-
-// void imprimeArvore(NodeAvl *T, int nivel, void (imprimirArvore)(void*,void*)){
-//     if(T!=NULL){
-//         imprimirArvore(T, &nivel);
-//         imprimeArvore(T->left, nivel+1, imprimirArvore);
-//         imprimeArvore(T->right, nivel+1, imprimirArvore);
-//     }
-// }
-
-void imprimeArvore(NodeAvl *T, int nivel, void (imprimirArvore)(void*,void*)){
-    int i;
-    if(T!=NULL){
-        imprimirArvore(T,&nivel);
-        imprimeArvore(T->left,nivel+1,imprimirArvore);
-        imprimeArvore(T->right,nivel+1,imprimirArvore);
+NodeAvl *deleteAvl(NodeAvl **node, void *chave, int (compararValores)(void*,void*),void freeInfo(NodeAvl* node)){
+    if (!(*node)) return 0;
+    NodeAvl *Remover;
+    // if(chave<(*node)->chave){ //se a chave que quero remover é menor que o nó
+    if(compararValores(chave,(*node)->chave) < 0){
+        if(Remover = deleteAvl(&(*node)->left, chave, compararValores,freeInfo)){ //Como foi removida do lado esquerdo, preciso verificar se preciso balancear a arvore da direita
+            if(balanceAVL(*node)>=2){
+                if (heightAvl((*node)->right->left)<=heightAvl((*node)->right->right)) RotationRR(node);
+                else RotationRL(node);
+            }
+            (*node)->fatorBal = heightAvl((*node)->left) - heightAvl((*node)->right);
+        }
     }
+    // if(chave>(*node)->chave){ //se a chave que quero remover é maior que o nó
+    if(compararValores(chave,(*node)->chave) > 0){
+        if(Remover = deleteAvl(&(*node)->right, chave, compararValores,freeInfo)){ //Como foi removida do lado direito, preciso verificar se preciso balancear a arvore da esquerda
+            if(balanceAVL(*node)>=2){
+                if (heightAvl((*node)->left->right)<=heightAvl((*node)->left->left)) RotationLL(node);
+                else RotationLR(node);
+            }
+            (*node)->fatorBal = heightAvl((*node)->left) - heightAvl((*node)->right);
+        }
+    }
+    // if(chave==(*node)->chave){
+    if(compararValores(chave,(*node)->chave) == 0){
+        if(((*node)->left==NULL || (*node)->right==NULL)){ //O pai tem 1 ou 0 filhos;
+            Remover = (*node); //Aponta pro nó a ser removido
+            if((*node)->left!=NULL)  *node=(*node)->left;
+            else *node=(*node)->right;
+        }else{ //o pai tem 2 filhos;
+            NodeAvl *temp=findSmallestElementAVL((*node)->right); //Procura a menor chave da subarvore a direita
+            freeInfo(*node);
+            (*node)->chave=temp->chave; //Nó atual recebe a menor chave
+            (*node)->info=temp->info;
+            if(Remover = deleteAvl(&(*node)->right, (*node)->chave, compararValores, freeInfo)){ //chama a função delete para remover a menor chave da subarvore a direita (que nao tem nenhum filho)
+                if(balanceAVL(*node)>=2){
+                    if(heightAvl((*node)->left->right)<=heightAvl((*node)->left->left)) RotationLL(node);
+                    else RotationLR(node);
+                }
+                (*node)->fatorBal = heightAvl((*node)->left) - heightAvl((*node)->right);
+            }  
+        }
+    }
+    return Remover;
 }
 
-// void imprimeArvore(NodeAvl *T, int nivel){
-//     int i;
-//     if(T!=NULL){
-//         imprimeArvore(T->right, nivel+1);
-//         for(i=0; i<nivel; i++) printf("\t");
-//         printf("(%d):%d\n",T->chave,T->fatorBal);
-//         imprimeArvore(T->left, nivel+1);
-//     }
-// }
+ //Funcao que imprime uma arvore
+void printAvl(NodeAvl *raiz, int nivel,void (imprimeNo)(void*,void*)){
+    int i;
+    if(raiz!=NULL){
+        printAvl(raiz->right, nivel+1, imprimeNo);
+        for(i=0; i<nivel; i++) printf("\t");
+        imprimeNo(raiz,raiz->info);
+        printAvl(raiz->left, nivel+1, imprimeNo);
+    }
+}
 
  //Auxiliar de 'destroyAvl' que libera no por no
 void auxDestroyAvl(NodeAvl *node){
