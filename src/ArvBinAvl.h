@@ -64,7 +64,7 @@ int insertAvl(NodeAvl **node, NodeAvl *novo, int (compararValores)(void*,void*))
 
 /* ==================================  Funcao de Busca da arvore  ========================================*/
 /*  
-    Entrada: (1) NodeAvl **node (Raiz da arvore/subarvore)
+    Entrada: (1) NodeAvl *node (Raiz da arvore/subarvore)
              (2) void *chave (Valor a ser buscado)
              (3) int (compararValores)(void*,void*) -> Funcao que compara as informacoes dos nos,
                  deve ser implementada no arquivo teste
@@ -78,9 +78,18 @@ NodeAvl* searchAvl(NodeAvl *node, void *chave, int (comparaValores)(void*,void*)
              (2) void *chave (Valor a ser removido)
              (3) int (compararValores)(void*,void*) -> Funcao que compara as informacoes dos nos,
                  deve ser implementada no arquivo teste
+             (4) void freeInfo(NodeAvl* node) -> Funcao que libera a memoria do no,
+                 deve ser implementada no arquivo teste
     Saida: No que possui a chave buscada ou NULL
 */
 NodeAvl* deleteAvl(NodeAvl **node, void *chave, int (compararValores)(void*,void*), void freeInfo(NodeAvl* node));
+
+/* ===========================  Funcao que retorna menor elemento da subarvore  ===========================*/
+/*  
+    Entrada: (1) NodeAvl *node (Raiz da subarvore)
+    Saida: Ponteiro para no com menor valor
+*/
+NodeAvl *findSmallestElementAVL(NodeAvl *node);
 
 /* =============================  Funcao que retorna altura da arvore  ===================================*/
 /*  
@@ -88,6 +97,13 @@ NodeAvl* deleteAvl(NodeAvl **node, void *chave, int (compararValores)(void*,void
     Saida: Altura da arvore/subarvore inserida
 */
 int heightAvl(NodeAvl *raiz);
+
+/* =============================  Funcao que retorna o balanco da arvore  ================================*/
+/*  Calcula o fator de balanço de um nó
+    Entrada: (1) NodeAvl *avl
+    Saida: Fator de balanceamento do no (altura esquerda - altura direita)
+*/
+int balanceAVL(NodeAvl *avl);
 
 /* =================================  Funcao que imprime a  arvore  ======================================*/
 /*  
